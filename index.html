@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PetCare Pro</title>
+    <title>PetCare Pro Digital</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" id="conteudo-principal">
+    <div class="container">
         <div id="tela-dashboard">
             <header><h1>🐾 Meus Pets</h1></header>
             <div id="lista-pets-grid" class="pet-grid"></div>
@@ -17,6 +17,7 @@
         <div id="tela-cadastro" style="display:none">
             <header><h2>Novo Cadastro</h2></header>
             <section class="card">
+                <h3>Informações e Foto</h3>
                 <input type="text" id="fotoUrl" placeholder="Link da Foto (URL)" class="full-width">
                 <div class="grid">
                     <input type="text" id="nomePet" placeholder="Nome" class="full-width">
@@ -24,38 +25,67 @@
                     <input type="text" id="raca" placeholder="Raça">
                     <input type="number" id="idade" placeholder="Idade">
                     <input type="text" id="peso" placeholder="Peso (kg)">
+                    <select id="sexo" class="full-width"><option value="Macho">Macho</option><option value="Fêmea">Fêmea</option></select>
                 </div>
-                <button onclick="cadastrarPet()">Salvar Pet</button>
-                <button class="btn-cancelar" onclick="mostrarTela('tela-dashboard')">Cancelar</button>
+                <h3>Alimentação Principal</h3>
+                <div class="grid">
+                    <input type="text" id="r_marca" placeholder="Marca">
+                    <input type="text" id="r_tipo" placeholder="Tipo">
+                    <input type="text" id="r_qtd" placeholder="Gramas">
+                    <input type="text" id="r_freq" placeholder="Vezes/dia">
+                </div>
+                <h3>Petiscos</h3>
+                <div class="grid">
+                    <input type="text" id="p_marca" placeholder="Marca">
+                    <input type="text" id="p_tipo" placeholder="Tipo">
+                    <input type="text" id="p_qtd" placeholder="Gramas">
+                    <input type="text" id="p_freq" placeholder="Vezes/dia">
+                </div>
+                <div class="acoes">
+                    <button onclick="cadastrarPet()">Salvar Pet</button>
+                    <button class="btn-cancelar" onclick="mostrarTela('tela-dashboard')">Cancelar</button>
+                </div>
             </section>
         </div>
 
         <div id="tela-carteira" style="display:none">
-            <div class="no-print">
+            <div class="no-print acoes-topo">
                 <button onclick="mostrarTela('tela-dashboard')" class="btn-voltar">⬅ Voltar</button>
-                <button onclick="gerarPDF()" class="btn-pdf">📄 Gerar Relatório PDF</button>
-            </div>
-            
-            <div id="secao-imprimir">
-                <div id="cabecalho-pet"></div>
-                <div id="info-alimento" class="card"></div>
-                <div class="card">
-                    <h3>💉 Próximas Vacinas / Reforços</h3>
-                    <ul id="lista-reforcos"></ul>
-                </div>
-                <div class="card">
-                    <h3>📅 Histórico Completo</h3>
-                    <div id="historico-eventos"></div>
-                </div>
+                <button onclick="window.print()" class="btn-pdf">📄 Gerar PDF</button>
             </div>
 
-            <div class="card no-print">
-                <h3>💉 Registrar Vacina</h3>
-                <div class="grid">
-                    <input type="text" id="v_nome" placeholder="Vacina">
-                    <input type="date" id="v_data" title="Data Aplicada">
-                    <input type="date" id="v_proxima" title="Próxima Dose">
-                    <button onclick="salvarEvento('NOVA_VACINA')">Lançar</button>
+            <div id="area-impressao">
+                <div id="cabecalho-pet" class="card-perfil"></div>
+                
+                <div class="abas no-print">
+                    <button onclick="aba('tab-alimentacao')">Alimentação</button>
+                    <button onclick="aba('tab-saude')">Saúde e Histórico</button>
+                </div>
+
+                <div id="tab-alimentacao" class="aba-content">
+                    <div id="info-alimento" class="card"></div>
+                </div>
+
+                <div id="tab-saude" class="aba-content" style="display:none">
+                    <div class="card no-print">
+                        <h3>💉 Registrar Vacina</h3>
+                        <div class="grid">
+                            <input type="text" id="v_nome" placeholder="Vacina">
+                            <input type="date" id="v_data" title="Data Aplicada">
+                            <input type="date" id="v_proxima" title="Próxima Dose">
+                            <button onclick="salvarEvento('NOVA_VACINA')" class="full-width">Lançar Vacina</button>
+                        </div>
+                    </div>
+                    <div class="card no-print">
+                        <h3>🩺 Registrar Consulta</h3>
+                        <input type="text" id="c_motivo" placeholder="Motivo">
+                        <textarea id="c_diag" placeholder="Diagnóstico/Obs"></textarea>
+                        <input type="date" id="c_data">
+                        <button onclick="salvarEvento('NOVA_CONSULTA')">Lançar Consulta</button>
+                    </div>
+                    
+                    <h3>📅 Linha do Tempo</h3>
+                    <div id="historico-eventos"></div>
                 </div>
             </div>
         </div>
