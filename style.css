@@ -1,20 +1,14 @@
-:root { --primary: #27ae60; --bg: #f4f7f6; }
-body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
-header { text-align: center; color: var(--primary); margin-bottom: 20px; }
-.container { max-width: 600px; margin: auto; }
-.card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
-h2 { font-size: 1.1rem; border-left: 4px solid var(--primary); padding-left: 10px; margin-top: 0; margin-bottom: 15px; }
-
-.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+:root { --primary: #27ae60; --secondary: #2980b9; --bg: #f4f7f6; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding: 15px; }
+.container { max-width: 800px; margin: auto; }
+.card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+h2 { color: var(--primary); font-size: 1.2rem; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+h3 { font-size: 0.9rem; color: #666; margin-top: 15px; text-transform: uppercase; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .full-width { grid-column: span 2; }
-
-input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
-textarea { height: 70px; resize: none; }
-
-button { background: var(--primary); color: white; border: none; padding: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; margin-top: 10px; }
-button:hover { background: #219150; }
-button:disabled { background: #ccc; }
-
-ul { list-style: none; padding: 0; }
-li { background: #f9f9f9; padding: 12px; border-radius: 8px; margin-bottom: 8px; border-left: 4px solid #2ecc71; font-size: 14px; line-height: 1.4; }
-small { color: #666; display: block; margin-top: 4px; }
+input, select { padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+button { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; margin-top: 10px; width: 100%; }
+.btn-pet { background: var(--secondary); margin-bottom: 10px; }
+.btn-voltar { background: #666; width: auto; padding: 5px 15px; }
+.info-box { background: #e8f4fd; padding: 15px; border-radius: 8px; margin-bottom: 15px; }
+li { padding: 10px; border-bottom: 1px solid #eee; list-style: none; }
