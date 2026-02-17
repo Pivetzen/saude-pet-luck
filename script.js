@@ -1,18 +1,23 @@
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyaOyd-1YkAbmh5CBHddbeVB0Zde2evnQSLqONNfWG-7WgeKlqn-pF4rE4CbyH3-BLlbA/exec";
 
-// Função para enviar dados para o Google Sheets
 function enviarDados() {
     const btn = document.getElementById('btnSalvar');
+    
+    // Coletando todos os dados do perfil + vacina
     const payload = {
         pet: document.getElementById('nomePet').value,
+        especie: document.getElementById('especie').value,
+        raca: document.getElementById('raca').value,
+        idade: document.getElementById('idade').value,
+        peso: document.getElementById('peso').value,
+        sexo: document.getElementById('sexo').value,
         vacina: document.getElementById('vacinaNome').value,
-        data: document.getElementById('vacinaData').value,
-        obs: document.getElementById('racao').value
+        data: document.getElementById('vacinaData').value
     };
 
-    if(!payload.vacina || !payload.data) return alert("Preencha a vacina e a data!");
+    if(!payload.pet || !payload.vacina) return alert("Por favor, preencha ao menos o Nome do Pet e a Vacina!");
 
-    btn.innerText = "Enviando...";
+    btn.innerText = "Salvando...";
     btn.disabled = true;
 
     fetch(SCRIPT_URL, {
@@ -20,18 +25,18 @@ function enviarDados() {
         body: JSON.stringify(payload)
     })
     .then(() => {
-        alert("Salvo com sucesso!");
+        alert("Dados registrados na planilha!");
         btn.innerText = "Salvar na Planilha";
         btn.disabled = false;
-        carregarVacinas(); // Atualiza a lista
+        carregarVacinas();
     })
     .catch(error => {
         console.error("Erro:", error);
+        alert("Erro ao salvar. Verifique a URL do Script.");
         btn.disabled = false;
     });
 }
 
-// Função para buscar dados da Planilha e exibir no site
 function carregarVacinas() {
     const lista = document.getElementById('listaVacinas');
     const status = document.getElementById('status');
@@ -41,14 +46,17 @@ function carregarVacinas() {
     .then(data => {
         status.style.display = 'none';
         lista.innerHTML = "";
-        // Pula a primeira linha (cabeçalho) e mostra as vacinas
+        
+        // Exibe os registros da planilha (ignorando o cabeçalho)
         data.slice(1).reverse().forEach(row => {
             const li = document.createElement('li');
-            li.innerHTML = `<strong>${row[1]}</strong> - ${row[2]} <br> <small>Pet: ${row[0]}</small>`;
+            li.innerHTML = `
+                <strong>💉 ${row[6]}</strong> (${row[7]})<br>
+                <small>🐾 <b>${row[0]}</b> | ${row[1]} | ${row[2]} | ${row[4]}kg</small>
+            `;
             lista.appendChild(li);
         });
     });
 }
 
-// Carrega ao abrir a página
 window.onload = carregarVacinas;
