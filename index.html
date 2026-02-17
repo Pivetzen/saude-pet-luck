@@ -15,10 +15,15 @@
         <section class="card">
             <h2>🏠 Perfil do Pet</h2>
             <div class="grid">
-                <input type="text" id="nomePet" placeholder="Nome do Pet">
+                <div class="full-width">
+                    <input type="text" id="nomePet" placeholder="Nome do Pet">
+                </div>
+                <input type="text" id="especie" placeholder="Espécie (Ex: Cão)">
                 <input type="text" id="raca" placeholder="Raça">
-                <input type="number" id="idade" placeholder="Idade">
-                <select id="sexo">
+                <input type="number" id="idade" placeholder="Idade (anos)">
+                <input type="text" id="peso" placeholder="Peso (kg)">
+                <select id="sexo" class="full-width">
+                    <option value="" disabled selected>Sexo</option>
                     <option value="Macho">Macho</option>
                     <option value="Fêmea">Fêmea</option>
                 </select>
@@ -33,17 +38,17 @@
         </section>
 
         <section class="card">
-            <h2>💉 Nova Vacina</h2>
+            <h2>💉 Registro de Vacina</h2>
             <div class="grid">
                 <input type="text" id="vacinaNome" placeholder="Nome da Vacina">
                 <input type="date" id="vacinaData">
-                <button onclick="enviarDados()" id="btnSalvar">Salvar na Planilha</button>
+                <button onclick="enviarDados()" id="btnSalvar" class="full-width">Salvar na Planilha</button>
             </div>
         </section>
 
         <section class="card">
-            <h2>📅 Histórico (Planilha)</h2>
-            <div id="status">Carregando histórico...</div>
+            <h2>📅 Histórico Recente</h2>
+            <div id="status">Carregando dados...</div>
             <ul id="listaVacinas"></ul>
         </section>
     </div>
