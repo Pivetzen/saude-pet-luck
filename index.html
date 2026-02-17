@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PetCare - Caderneta Digital</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🐾 Pet Health Log</h1>
+    </header>
+
+    <main>
+        <section id="perfil">
+            <h2>Dados do Pet</h2>
+            <div class="card">
+                <input type="text" id="nomePet" placeholder="Nome do Pet">
+                <input type="text" id="especie" placeholder="Espécie (Ex: Cão)">
+                <input type="number" id="idade" placeholder="Idade">
+                <select id="sexo">
+                    <option value="M">Macho</option>
+                    <option value="F">Fêmea</option>
+                </select>
+                <button onclick="salvarPerfil()">Salvar Perfil</button>
+            </div>
+        </section>
+
+        <section id="vacinas">
+            <h2>💉 Registro de Vacinas</h2>
+            <div class="form-vacina">
+                <input type="text" id="nomeVacina" placeholder="Nome da Vacina">
+                <input type="date" id="dataVacina">
+                <button onclick="adicionarVacina()">Adicionar</button>
+            </div>
+            <ul id="listaVacinas"></ul>
+        </section>
+
+        <section id="dieta">
+            <h2>🥣 Alimentação</h2>
+            <textarea id="infoAlimento" placeholder="Tipo de ração, quantidade e petiscos..."></textarea>
+            <button onclick="salvarDieta()">Salvar Dieta</button>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
