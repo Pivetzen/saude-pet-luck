@@ -1,4 +1,4 @@
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyaOyd-1YkAbmh5CBHddbeVB0Zde2evnQSLqONNfWG-7WgeKlqn-pF4rE4CbyH3-BLlbA/exec"; // Certifique-se de usar a URL de "App da Web"
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyaOyd-1YkAbmh5CBHddbeVB0Zde2evnQSLqONNfWG-7WgeKlqn-pF4rE4CbyH3-BLlbA/exec";
 let DADOS = { pets: [], vacinas: [], consultas: [] };
 let PET_ATUAL = "";
 
@@ -8,8 +8,8 @@ async function carregar() {
         DADOS = await res.json();
         renderHome();
     } catch (e) {
-        console.error("Erro ao carregar:", e);
-        document.getElementById('lista-pets-grid').innerHTML = "<p>Erro ao conectar com a planilha. Verifique a URL.</p>";
+        console.error(e);
+        document.getElementById('lista-pets-grid').innerHTML = "Erro ao carregar dados.";
     }
 }
 
@@ -26,13 +26,12 @@ function renderHome() {
         return;
     }
     DADOS.pets.slice(1).forEach(p => {
-        if(p[0]) {
-            const btn = document.createElement('button');
-            btn.className = "btn-pet-card";
-            btn.innerHTML = `<span>🐕</span> ${p[0]}`;
-            btn.onclick = () => abrirCarteira(p[0]);
-            grid.appendChild(btn);
-        }
+        const btn = document.createElement('button');
+        btn.className = "btn-pet-card";
+        const img = p[14] ? `<img src="${p[14]}" class="pet-thumb">` : `<div class="pet-thumb" style="display:flex;align-items:center;justify-content:center;background:#eee">🐾</div>`;
+        btn.innerHTML = `${img} ${p[0]}`;
+        btn.onclick = () => abrirCarteira(p[0]);
+        grid.appendChild(btn);
     });
 }
 
@@ -41,16 +40,21 @@ function abrirCarteira(nome) {
     mostrarTela('tela-carteira');
     const p = DADOS.pets.find(x => x[0] === nome);
     
-    document.getElementById('cabecalho-pet').innerHTML = `<h2>${p[0]}</h2><p>${p[1]} | ${p[2]} | ${p[4]}kg</p>`;
+    const fotoHTML = p[14] ? `<img src="${p[14]}" class="foto-perfil">` : "";
+    document.getElementById('cabecalho-pet').innerHTML = `
+        ${fotoHTML}
+        <h2>${p[0]}</h2>
+        <p>${p[1]} | ${p[2]} | ${p[3]} anos | ${p[4]}kg | ${p[5]}</p>
+    `;
     
     document.getElementById('info-alimento').innerHTML = `
-        <h3>Principal</h3>
-        <p><b>Marca:</b> ${p[6] || '-'} | <b>Tipo:</b> ${p[7] || '-'}</p>
-        <p><b>Quantidade:</b> ${p[8] || '-'}g | <b>Freq:</b> ${p[9] || '-'}x ao dia</p>
+        <h3>🥩 Alimentação Principal</h3>
+        <p><b>Marca:</b> ${p[6]} | <b>Tipo:</b> ${p[7]}</p>
+        <p><b>Quantidade:</b> ${p[8]}g | <b>Freq:</b> ${p[9]}x ao dia</p>
         <hr>
-        <h3>Petiscos</h3>
-        <p><b>Marca:</b> ${p[10] || '-'} | <b>Tipo:</b> ${p[11] || '-'}</p>
-        <p><b>Quantidade:</b> ${p[12] || '-'}g | <b>Freq:</b> ${p[13] || '-'}x ao dia</p>
+        <h3>🍪 Petiscos</h3>
+        <p><b>Marca:</b> ${p[10]} | <b>Tipo:</b> ${p[11]}</p>
+        <p><b>Quantidade:</b> ${p[12]}g | <b>Freq:</b> ${p[13]}x ao dia</p>
     `;
     renderHistorial();
 }
@@ -59,12 +63,9 @@ function renderHistorial() {
     const lista = document.getElementById('historico-eventos');
     lista.innerHTML = "";
     
-    const vacinas = DADOS.vacinas.filter(v => v[0] === PET_ATUAL);
-    const consultas = DADOS.consultas.filter(c => c[0] === PET_ATUAL);
-
     let eventos = [
-        ...vacinas.map(v => ({ tipo: 'V', data: v[2], desc: v[1] })),
-        ...consultas.map(c => ({ tipo: 'C', data: c[1], desc: c[2], obs: c[3] }))
+        ...DADOS.vacinas.filter(v => v[0] === PET_ATUAL).map(v => ({ tipo: 'V', data: v[2], desc: v[1], prox: v[3] })),
+        ...DADOS.consultas.filter(c => c[0] === PET_ATUAL).map(c => ({ tipo: 'C', data: c[1], desc: c[2], obs: c[3] }))
     ];
 
     eventos.sort((a, b) => new Date(b.data) - new Date(a.data));
@@ -72,24 +73,19 @@ function renderHistorial() {
     eventos.forEach(e => {
         const div = document.createElement('div');
         div.className = "item-hist";
-        div.innerHTML = e.tipo === 'V' 
-            ? `<b>💉 Vacina:</b> ${e.desc} (${e.data})` 
-            : `<b>🩺 Consulta:</b> ${e.desc} (${e.data})<br><small>${e.obs || ''}</small>`;
+        if (e.tipo === 'V') {
+            div.innerHTML = `<b>💉 Vacina:</b> ${e.desc} (Aplicada: ${e.data})`;
+            if(e.prox) div.innerHTML += `<br><span class="reforco">🔔 Próximo Reforço: ${e.prox}</span>`;
+        } else {
+            div.innerHTML = `<b>🩺 Consulta:</b> ${e.desc} (${e.data})<br><small>Obs: ${e.obs}</small>`;
+        }
         lista.appendChild(div);
     });
 }
 
-// FUNÇÃO DE ENVIO CORRIGIDA PARA EVITAR ERRO DE BLOQUEIO
 function enviar(payload) {
-    return fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors", // Crucial para Google Apps Script
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    }).then(() => {
-        alert("Enviado com sucesso! A página será atualizada.");
-        setTimeout(() => location.reload(), 500);
-    });
+    fetch(SCRIPT_URL, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) })
+    .then(() => { alert("Dados salvos!"); location.reload(); });
 }
 
 function salvarEvento(tipo) {
@@ -97,6 +93,7 @@ function salvarEvento(tipo) {
     if(tipo === 'NOVA_VACINA') {
         payload.vacina = document.getElementById('v_nome').value;
         payload.data = document.getElementById('v_data').value;
+        payload.proximaDose = document.getElementById('v_proxima').value;
     } else {
         payload.motivo = document.getElementById('c_motivo').value;
         payload.diagnostico = document.getElementById('c_diag').value;
@@ -121,7 +118,8 @@ function cadastrarPet() {
         p_marca: document.getElementById('p_marca').value,
         p_tipo: document.getElementById('p_tipo').value,
         p_qtd: document.getElementById('p_qtd').value,
-        p_freq: document.getElementById('p_freq').value
+        p_freq: document.getElementById('p_freq').value,
+        foto: document.getElementById('fotoUrl').value
     };
     enviar(payload);
 }
